@@ -1,12 +1,16 @@
 import React from 'react';
 import './App.css';
 import WebcamCapture from './WebcamCapture';
+import { Routes, Route } from "react-router-dom";
+
 
 function App() {
   return (
     <div className="App">
-      <h1>Let's build it</h1>
-      <WebcamCapture/>
+      <Routes>
+        <Route path="/" element={<WebcamCapture />} />
+        <Route path="/test" element={<WebcamCapture />} />
+      </Routes>
     </div>
   );
 }
