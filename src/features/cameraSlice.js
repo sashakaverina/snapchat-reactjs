@@ -9,7 +9,7 @@ export const cameraSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     setCameraImage: (state, action) => {
-      state.cameraImage += action.payload;
+      state.cameraImage = action.payload;
     },
     resetCameraImage: (state) => {
         state.cameraImage = null;
@@ -18,6 +18,6 @@ export const cameraSlice = createSlice({
 });
 
 export const { setCameraImage, resetCameraImage } = cameraSlice.actions;
-export const selectcamera = (state) => state.camera.cameraImage;
+export const selectCamera = (state) => state.camera.cameraImage;
 
 export default cameraSlice.reducer;
