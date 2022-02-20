@@ -4,7 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { resetCameraImage, selectCamera } from './features/cameraSlice';
 import './Preview.css';
 import { AttachFile, Close, Create, Crop, MusicNote, Note, Send, Timer } from '@material-ui/icons';
-import { TextField } from '@material-ui/core';
+import { v4 as uuid } from 'uuid';
+import { db, storage } from './firebase';
+import { serverTimestamp } from "firebase/firestore";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
+
+
 
 function Preview() {
     const cameraImage = useSelector(selectCamera);
@@ -24,6 +29,27 @@ function Preview() {
       navigate('/')
     }
 
+    const sendPost = () => {
+      const id = uuid();
+      const storageRef = ref(storage, `posts/${id}`);
+      const uploadTask = uploadString(storageRef, cameraImage, "data_url");
+
+      uploadTask.on('state_changed', null, (error) => {
+        console.log(error)
+      }, () => {
+        storage.ref('posts').child(id).getDownload()
+        .then((url) => {
+          db.collection('posts').add({
+            imageUrl: url,
+            username: "HELLO",
+            read: false,
+            timestamp: serverTimestamp(),
+          });
+          navigate('/chats');
+        })
+      })
+    }
+
   return (
     <div className='preview'>
         <Close onClick={closePreview} className='preview__close' />
@@ -38,7 +64,7 @@ function Preview() {
         </div>
 
         <img src={cameraImage} alt=''/>
-        <div className='preview__footer'>
+        <div className='preview__footer' onClick={sendPost}>
           <h2>Send Now</h2>
           <Send className='preview__sendIcon' fontSize='small'/>
         </div>
